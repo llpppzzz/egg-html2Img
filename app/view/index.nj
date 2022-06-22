@@ -1,0 +1,4 @@
+{% extends "layout.nj" %}
+{% block body %}
+    hello {{name}}!
+{% endblock %}

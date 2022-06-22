@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html {
+            font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+            font-weight: normal;
+            height: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            width: 750px;
+            margin: 0;
+            padding: 0;
+        }
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+        #main {
+            width: 375px;
+            zoom: 2;
+        }
+        ul, li {
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div id="main">
+    {% block body %}{% endblock %}
+</div>
+{% block script %}{% endblock %}
+</body>
+</html>
