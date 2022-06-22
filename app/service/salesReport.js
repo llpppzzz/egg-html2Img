@@ -5,7 +5,7 @@ const Service = require('egg').Service;
 const LOCAL_HOST = 'http://127.0.0.1:7001';
 
 const urls = {
-  getSalesReportHtml: `${LOCAL_HOST}/getSalesReport`
+  getSalesReportHtml: `${LOCAL_HOST}/getReportHtml`
 };
 
 class SalesReportService extends Service {
@@ -19,6 +19,19 @@ class SalesReportService extends Service {
       return await ctx.render('index.nj', res);
     } catch (e) {
       console.log('getSalesReportError', e);
+    }
+  }
+  async getSalesReportImg(query) {
+    try {
+      const {
+        ctx,
+        app: { browser }
+      } = this
+
+      return await browser.getImageByPath(ctx.http.buildURL(urls.getSalesReportHtml, query))
+    } catch (e) {
+      console.log('getSalesReportImg', e)
+      throw e
     }
   }
 }

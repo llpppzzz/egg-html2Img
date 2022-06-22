@@ -9,4 +9,6 @@ module.exports = app => {
 
   // 本地HTML服务
   router.get('/getReportHtml', controller.report.getSalesReport);
+  // 获取销售图片
+  router.get('/getReportImg', controller.report.getSalesReportImg)
 };
