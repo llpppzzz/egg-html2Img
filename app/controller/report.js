@@ -8,15 +8,22 @@ class ReportController extends Controller {
    */
   async getSalesReport() {
     const { ctx, service } = this
-    await service.salesReport.getSalesReport(ctx.query)
+    const data = await service.salesReport.getSalesReport(ctx.query)
+    await ctx.render('index.nj', data);
   }
   /**
    * 用于获取销售数据图片
    */
   async getSalesReportImg() {
     const { ctx, service } = this
-    ctx.body = await service.salesReport.getSalesReportImg(ctx.query)
-    ctx.response.type = 'image/jpeg'
+    const content = await service.salesReport.getSalesReportImg(ctx.query)
+    if (content) {
+      ctx.body = content
+      ctx.response.type = 'image/jpeg'
+    } else {
+      ctx.status = 400
+      ctx.body = '生成图片失败'
+    }
   }
 }
 

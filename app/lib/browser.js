@@ -1,21 +1,18 @@
-'use strict';
+'use strict'
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer')
 
 class Browser {
   constructor(app) {
-    this.app = app;
-    this.browser = null;
+    this.app = app
+    this.browser = null
   }
-
   _log(...args) {
-    this.app.logger.info('[Browser]', ...args);
+    this.app.logger.info('[Browser]', ...args)
   }
-
   _error(...args) {
-    this.app.logger.error('[Browser]', ...args);
+    this.app.logger.error('[Browser]', ...args)
   }
-
   async createBrowser() {
     this.browser = await puppeteer.launch({
       args: [
@@ -27,51 +24,55 @@ class Browser {
         '--no-zygote',
         '--single-process' // 单进程运行
       ]
-    });
+    })
   }
-
-  async getNewPage() {
-    const page = await this.browser.newPage();
+  async getNewPage(ctx) {
+    const page = await this.browser.newPage()
 
     page.on('error', error => {
-      this._error(error);
-      page.close();
-    });
+      this._error('Browser Page Error:', error)
+      page.close()
+    })
+    page.on('pageerror', error => {
+      this._error('Browser Page Error:', error)
+      page.close()
+    })
     page.on('console', msg => {
-      this._log('Browser Page Log:', msg.text());
-    });
+      this._log('Browser Page Log:', msg.text())
+    })
 
-    return page;
+    return page
   }
-
   async addWaterMark(page, waterMark) {
     try {
+      const stringOptions = JSON.stringify(waterMark)
       await page.addScriptTag({
-        url: '/public/js/waterMark.js'
+        url: 'public/js/waterMark.js'
       })
       await page.addScriptTag({
-        content: `WaterMarker("${waterMark}")`
+        content: `WaterMarker(${stringOptions})`
       })
     } catch (e) {
       this._error(e)
     }
   }
 
-  async getImageByPath(url, waterMark = '禁止外传') {
-    const page = await this.getNewPage();
-    await page.goto(url);
-    const ele = await page.$('body');
-
-    // 添加水印
+  async getImageByPath({ url, ctx, waterMark }) {
+    const page = await this.getNewPage(ctx)
+    const res = await page.goto(url)
+    if (JSON.stringify(res) !== '{}' && res._status !== 200) {
+      this._error(res)
+      throw new Error(res._status)
+    }
+    const ele = await page.$('body')
     waterMark && (await this.addWaterMark(page, waterMark))
-
     const img = await ele.screenshot({
       type: 'jpeg',
-      quality: 90
-    });
-    page.close();
-    return img;
+      quality: 70
+    })
+    page.close()
+    return img
   }
 }
 
-module.exports = Browser;
+module.exports = Browser

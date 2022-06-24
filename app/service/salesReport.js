@@ -10,16 +10,11 @@ const urls = {
 
 class SalesReportService extends Service {
   async getSalesReport(query) {
-    try {
-      const { ctx } = this;
-      // 模拟获取后端数据
-      const res = {
-        name: 'nunjucks'
-      }
-      return await ctx.render('index.nj', res);
-    } catch (e) {
-      console.log('getSalesReportError', e);
+    // 模拟获取后端数据
+    const res = {
+      name: query.name || 'nunjucks'
     }
+    return res
   }
   async getSalesReportImg(query) {
     try {
@@ -28,10 +23,19 @@ class SalesReportService extends Service {
         app: { browser }
       } = this
 
-      return await browser.getImageByPath(ctx.http.buildURL(urls.getSalesReportHtml, query))
+      return await browser.getImageByPath({
+        url: ctx.http.buildURL(urls.getSalesReportHtml, query),
+        waterMark: {
+          text: `禁止外传：${123}`,
+          size: '30px',
+          color: '#DDDDDD',
+          position: {
+            top: 0
+          }
+        }
+      })
     } catch (e) {
-      console.log('getSalesReportImg', e)
-      throw e
+      return null
     }
   }
 }

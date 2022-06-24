@@ -1,4 +1,4 @@
 {% extends "layout.nj" %}
 {% block body %}
-    hello {{name}}!
+    <div style="height: 400px;">hello {{name}}!</div>
 {% endblock %}
